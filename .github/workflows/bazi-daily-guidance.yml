@@ -1,0 +1,28 @@
+name: Bazi Daily Guidance
+
+on:
+  schedule:
+    # 18:11 UTC = 11:11am Pacific Daylight Time (UTC-7, in effect now, Jul 2026).
+    # Once PST (UTC-8) resumes in Nov, this fires at 10:11am Pacific instead —
+    # shift to "11 19 * * *" for the winter months if you want it pinned exactly.
+    - cron: "11 18 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  guidance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Send the daily Bazi guidance
+        env:
+          GMAIL_ADDRESS: iris.wl.tse@gmail.com
+          SEND_TO: iris.wl.tse@gmail.com
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python3 bazi_daily_guidance.py --force
